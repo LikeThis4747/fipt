@@ -8,3 +8,5 @@ notebooks/*
 /pretrained/
 /data/
 *-Copy*
+
+command.sh

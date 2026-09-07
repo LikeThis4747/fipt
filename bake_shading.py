@@ -70,8 +70,11 @@ if __name__ == '__main__':
         if not valid.any():
             continue
         position = positions[valid]
-        voxel_min = min(voxel_min,position.min())
-        voxel_max = max(voxel_max,position.max())
+        # voxel_min = min(voxel_min,position.min())
+        # voxel_max = max(voxel_max,position.max())
+        voxel_min = min(voxel_min, position.min().item())
+        voxel_max = max(voxel_max, position.max().item())
+
     voxel_min = 1.1*voxel_min
     voxel_max = 1.1*voxel_max
 
@@ -100,7 +103,7 @@ if __name__ == '__main__':
     
     # create voxle surface light field
     print('bake voxel surface light field')
-    vslf = VoxelSLF(mask.cpu(),voxel_min.item(),voxel_max.item())
+    vslf = VoxelSLF(mask.cpu(),voxel_min,voxel_max)
     vslf.radiance = torch.zeros_like(vslf.radiance)
     for idx in tqdm(range(len(dataset))):
         batch = dataset[idx]
@@ -121,8 +124,8 @@ if __name__ == '__main__':
     
     torch.save({
         'mask': (SpatialHist>0),
-        'voxel_min': voxel_min.item(),
-        'voxel_max': voxel_max.item(),
+        'voxel_min': voxel_min,
+        'voxel_max': voxel_max,
         'weight':vslf.state_dict()
     },os.path.join(OUTPUT_PATH,'vslf.npz'))
 
